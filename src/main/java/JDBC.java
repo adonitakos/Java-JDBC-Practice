@@ -1,6 +1,5 @@
 import java.sql.*;
 import java.util.*;
-import java.io.*;
 
 public class JDBC {
     static String URL = "jdbc:mysql://localhost:3306/campus store";
@@ -19,7 +18,7 @@ public class JDBC {
         }
     } // <--- SQLDriver() method ends here
 
-    User root;
+    User root; // declaring User object
 
     public static void login() throws SQLException {
         Scanner input = new Scanner(System.in);
@@ -33,7 +32,7 @@ public class JDBC {
         System.out.println("\nThe credentials are as follows: \n" +
                 "URL: " + URL + "\nUsername: " + uname + "\nPassword: " + password + "\n");
 
-        if(!uname.equals("root") || (!password.equals("cus1156")))
+        if(!uname.equals("root"))
         {
             System.out.println("Incorrect credentials! Please try again");
             login();
@@ -47,13 +46,17 @@ public class JDBC {
 
     } // <--- login() method ends here
 
-    public static void prompt() {
+    public static void prompt() throws SQLSyntaxErrorException {
         System.out.println("You can do one of the following:" +
-                "\n(1) Print the entire Inventory Stock table");
+                "\n(1) Print the entire Inventory Stock table" +
+                "\n(2) Print a column from the Inventory Stock table");
         int choice = input.nextInt();
 
         if(choice == 1) {
             printTable("inventorystock");
+        }
+        else if(choice == 2) {
+            SELECT_Column();
         }
         else {
             System.out.println("Invalid input. Please try again");
@@ -83,8 +86,32 @@ public class JDBC {
 
     } // <--- printTable() method ends here
 
+
+    public static void SELECT_Column() {
+        Scanner input = new Scanner(System.in);
+        System.out.println("\nWhat column would you like to output?: ");
+        String column = input.nextLine();
+
+        String query = "SELECT " + column + " FROM inventorystock";
+        System.out.println("\n\t\t\t\t\t\t\t" + "inventorystock" + "\n\t " + column);
+
+        try {
+            Statement statement = con.createStatement();
+            ResultSet result = statement.executeQuery(query);
+            while(result.next())
+            {
+                System.out.println(result.getString(column) + "\t\t");
+            }
+        } // <--- try{} block ends here
+        catch(SQLException e) {
+            System.out.println("\n\t\tThis is not a valid column within the inventorystock table!");
+            e.printStackTrace();
+        } // <--- catch{} block ends here
+
+    } // <--- SELECT() method ends here
+
                                     // ---------*** Main ***--------- \\
-    public static void main(String[] args) throws SQLException{
+    public static void main(String[] args) throws Exception{
         System.out.println("\n------------------------ Welcome to this Java JDBC SQL Connection Program ------------------------ ");
         login();
         prompt();

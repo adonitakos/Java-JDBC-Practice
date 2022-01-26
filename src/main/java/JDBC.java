@@ -21,7 +21,6 @@ public class JDBC {
     User root; // declaring User object
 
     public static void login() throws SQLException {
-        Scanner input = new Scanner(System.in);
         System.out.println("Please enter the authorized credentials");
 
         System.out.print("Username: ");
